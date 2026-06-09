@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Saúde</title>
+    <link rel="stylesheet" href="{% static 'professionals/cadastro.css' %}">
+    <script defer src="{% static 'professionals/cadastro.js' %}"></script>
+</head>
+<body>
+    <main class="page-shell">
+        <section class="hero">
+            <p class="eyebrow">Health API</p>
+            <h1>Cadastro de profissionais e consultas</h1>
+            <p class="subtitle">
+                A tela abaixo consome a API JSON do projeto via navegador. Faça login com JWT, depois cadastre
+                profissionais e consultas sem sair da página.
+            </p>
+        </section>
+
+        <section id="status" class="alerts" aria-live="polite"></section>
+
+        <section class="card auth-card">
+            <div class="card-header">
+                <p class="card-label">Autenticação</p>
+                <h2>Acessar a API</h2>
+            </div>
+
+            <div class="auth-toolbar">
+                <p class="token-state" id="token-state">Nenhum token salvo no navegador.</p>
+                <div class="auth-actions">
+                    <button type="button" id="refresh-data" class="secondary-button">Carregar dados</button>
+                    <button type="button" id="logout-button" class="secondary-button danger-button">Sair</button>
+                </div>
+            </div>
+
+            <form id="auth-form" class="auth-grid">
+                <label>
+                    Usuário
+                    <input type="text" name="username" placeholder="Seu usuário" required>
+                </label>
+
+                <label>
+                    Senha
+                    <input type="password" name="password" placeholder="Sua senha" required>
+                </label>
+
+                <button type="submit">Entrar com JWT</button>
+            </form>
+
+            <p class="auth-note">
+                O token fica salvo no navegador e é usado nos envios JSON para <span>/api/professionals/</span> e
+                <span>/api/appointments/</span>.
+            </p>
+        </section>
+
+        <section class="grid">
+            <article class="card">
+                <div class="card-header">
+                    <p class="card-label">Profissionais</p>
+                    <h2>Cadastro de profissional</h2>
+                </div>
+
+                <form id="professional-form" class="form-panel">
+                    <p class="form-hint">Campos obrigatórios: Nome social, Profissão, Endereço e Contato.</p>
+
+                    <label>
+                        Nome social
+                        <input type="text" name="social_name" placeholder="Ex.: Dra. Ana Souza" required>
+                    </label>
+
+                    <label>
+                        Profissão
+                        <input type="text" name="profession" placeholder="Ex.: Psicóloga" required>
+                    </label>
+
+                    <label>
+                        Endereço
+                        <input type="text" name="address" placeholder="Ex.: Rua Central, 123" required>
+                    </label>
+
+                    <label>
+                        Contato
+                        <input type="text" name="contact" placeholder="Ex.: (11) 99999-9999" required>
+                    </label>
+
+                    <button type="submit">Salvar profissional</button>
+                </form>
+            </article>
+
+            <article class="card">
+                <div class="card-header">
+                    <p class="card-label">Consultas</p>
+                    <h2>Cadastro de consulta</h2>
+                </div>
+
+                <form id="appointment-form" class="form-panel">
+                    <p class="form-hint">Campos obrigatórios: Data e Profissional vinculado.</p>
+
+                    <label>
+                        Profissional vinculado
+                        <select name="professional" id="appointment-professional" required>
+                            <option value="">Selecione um profissional</option>
+                            {% for professional in professionals %}
+                                <option value="{{ professional.id }}">{{ professional.social_name }} - {{ professional.profession }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label>
+                        Data
+                        <input type="datetime-local" name="appointment_date" required>
+                    </label>
+
+                    <button type="submit">Salvar consulta</button>
+                </form>
+            </article>
+        </section>
+
+        <section class="card summary">
+            <div class="card-header">
+                <p class="card-label">Últimos registros</p>
+                <h2>Consultas recentes</h2>
+            </div>
+
+            <div class="summary-list" id="appointments-summary">
+                {% for appointment in appointments %}
+                    <article class="summary-item">
+                        <strong>{{ appointment.professional.social_name }}</strong>
+                        <span>{{ appointment.professional.profession }}</span>
+                        <time>{{ appointment.appointment_date|date:"d/m/Y H:i" }}</time>
+                    </article>
+                {% empty %}
+                    <p class="empty-state">Ainda não há consultas cadastradas.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
