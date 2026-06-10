@@ -19,6 +19,7 @@ env:
   DB_HOST: 127.0.0.1
   DB_PORT: 5432
   ECS_CONTAINER_NAME: web
+  AWS_REGION_DEFAULT: sa-east-1
 
 jobs:
   lint:
@@ -85,7 +86,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGING }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGING }}
-          aws-region: ${{ secrets.AWS_REGION_STAGING }}
+          aws-region: ${{ secrets.AWS_REGION_STAGING || env.AWS_REGION_DEFAULT }}
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
       - name: Build and push image
@@ -132,7 +133,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-          aws-region: ${{ secrets.AWS_REGION_PROD }}
+          aws-region: ${{ secrets.AWS_REGION_PROD || env.AWS_REGION_DEFAULT }}
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
       - name: Build and push image
