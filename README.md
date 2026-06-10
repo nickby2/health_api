@@ -101,7 +101,7 @@ Cobertura incluída:
 
 ## CI/CD
 
-O workflow em `.github/workflows/ci-cd.yml` está organizado em quatro etapas:
+O workflow em [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml) está organizado em quatro etapas:
 
 1. `lint` com `flake8`
 2. `test` com banco PostgreSQL em serviço de CI
@@ -114,6 +114,29 @@ O workflow em `.github/workflows/ci-cd.yml` está organizado em quatro etapas:
 - `main` aciona deploy em produção
 - A imagem é versionada pelo hash do commit
 - O deploy usa ECS como destino de referência
+
+### Segredos necessários no GitHub
+
+Configure os seguintes secrets no repositório:
+
+- `AWS_ACCESS_KEY_ID_STAGING`
+- `AWS_SECRET_ACCESS_KEY_STAGING`
+- `AWS_REGION_STAGING`
+- `AWS_ACCOUNT_ID_STAGING`
+- `ECR_REPOSITORY_STAGING`
+- `ECS_CLUSTER_STAGING`
+- `ECS_SERVICE_STAGING`
+- `ECS_TASK_DEFINITION_STAGING`
+- `AWS_ACCESS_KEY_ID_PROD`
+- `AWS_SECRET_ACCESS_KEY_PROD`
+- `AWS_REGION_PROD`
+- `AWS_ACCOUNT_ID_PROD`
+- `ECR_REPOSITORY_PROD`
+- `ECS_CLUSTER_PROD`
+- `ECS_SERVICE_PRODUCTION`
+- `ECS_TASK_DEFINITION_PROD`
+
+O container nomeado como `web` é o alvo do render da task definition. Se a sua task definition usar outro nome de container, ajuste o valor de `ECS_CONTAINER_NAME` no workflow.
 
 ## Rollback
 

@@ -6,6 +6,8 @@ ENV PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
+COPY pyproject.toml poetry.lock README.md ./
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential curl libpq-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -15,7 +17,7 @@ RUN python -m pip install --upgrade pip poetry
 COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --only main
+    && poetry install --no-interaction --no-ansi --only main --no-root
 
 COPY . .
 

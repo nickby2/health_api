@@ -57,12 +57,14 @@ function formatAppointmentDate(value) {
 }
 
 async function requestJson(url, options = {}) {
+    const { headers: customHeaders, ...requestOptions } = options;
+
     const response = await fetch(url, {
         headers: {
             "Content-Type": "application/json",
-            ...(options.headers || {}),
+            ...(customHeaders || {}),
         },
-        ...options,
+        ...requestOptions,
     });
 
     const data = await response.json().catch(() => ({}));
