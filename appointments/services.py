@@ -9,6 +9,7 @@ class AppointmentService:
     @staticmethod
     def create_appointment(data):
         appointment_date = data.get("appointment_date")
+        professional = data.get("professional")
 
         # Verifica se o campo foi informado
         if appointment_date is None:
@@ -22,6 +23,19 @@ class AppointmentService:
                 {
                     "appointment_date": (
                         "Não é permitido agendar consultas em datas ou horários passados."
+                    )
+                }
+            )
+        
+        # Impedir conflito de horário
+        if Appointment.objects.filter(
+            professional=professional,
+            appointment_date=appointment_date
+        ).exists():
+            raise ValidationError(
+                {
+                    "professional": (
+                        "Já existe uma consulta agendada para este profissional neste horário."
                     )
                 }
             )
