@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from appointments.models import Appointment
 from appointments.serializers import AppointmentSerializer
+from appointments.services import AppointmentService
 
 
 class PlainTextJSONParser(JSONParser):
@@ -23,3 +24,12 @@ class AppointmentViewSet(ModelViewSet):
         appointments = self.get_queryset().filter(professional_id=professional_id)
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
+    
+class AppointmentViewSet(ModelViewSet):
+    serializer_class = AppointmentSerializer
+    queryset = Appointment.objects.all()
+
+    def perform_create(self, serializer):
+        AppointmentService.create_appointment(
+            serializer.validated_data
+        )
