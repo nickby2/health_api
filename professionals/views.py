@@ -11,7 +11,17 @@ class PlainTextJSONParser(JSONParser):
 
 
 class ProfessionalViewSet(ModelViewSet):
-    queryset = Professional.objects.all()
     serializer_class = ProfessionalSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [PlainTextJSONParser, JSONParser]
+
+    def get_queryset(self):
+        queryset = Professional.objects.all()
+
+        specialty = self.request.query_params.get("specialty")
+
+        if specialty:
+            queryset = queryset.filter(
+                specialty__icontains=specialty
+            )
+        return queryset
