@@ -24,10 +24,6 @@ class AppointmentViewSet(ModelViewSet):
         appointments = self.get_queryset().filter(professional_id=professional_id)
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
-    
-class AppointmentViewSet(ModelViewSet):
-    serializer_class = AppointmentSerializer
-    queryset = Appointment.objects.all()
 
     def perform_create(self, serializer):
         AppointmentService.create_appointment(
